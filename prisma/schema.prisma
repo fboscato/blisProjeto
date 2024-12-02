@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id         String    @id @default(uuid())
+  nome       String
+  birthdate  DateTime?
+  email      String    @unique
+  password   String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  userDocuments UserDocuments[] // Relação com UserDocuments
+  abilities     UsersAbilities[] // Relação com UsersAbilities
+
+  @@map("users")
+}
+
+model UserDocuments {
+  id         String   @id @default(uuid())
+  nome       String
+  url        String
+  user_id    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_documents")
+}
+
+model Abilities {
+  id         String   @id @default(uuid())
+  nome       String
+  active     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  usersAbilities UsersAbilities[] // Relação com UsersAbilities
+
+  @@map("abilities")
+}
+
+model UsersAbilities {
+  id               String   @id @default(uuid())
+  user_id          String
+  ability_id       String
+  years_experience Int
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  user    Users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  ability Abilities @relation(fields: [ability_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, ability_id]) // Garante que não existam duplicatas
+  @@map("users_abilities")
+}
