@@ -5,6 +5,7 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["dev", "production", "test"]).default("dev"),
   JWT_SECRET: z.string(),
   PORT: z.coerce.number().default(3333),
+  OPENWEATHER_API_KEY: z.string(),
 });
 const _env = envSchema.safeParse(process.env);
 if (_env.success === false) {

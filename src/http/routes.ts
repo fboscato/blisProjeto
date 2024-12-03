@@ -10,6 +10,7 @@ import {  createUserAbility, deleteUserAbility, getUserAbilities } from "./contr
 
 import { updateAbility } from "./controller/abilidadeUpdate";
 import { createAbility } from "./controller/abilidadeCreate";
+import { weatherRoutes } from "./weatherRoutes";
 
 const upload = multer({
   dest: 'uploads/',  // Pasta para armazenar os arquivos
@@ -26,7 +27,7 @@ export const routes = Router();
 
 routes.post("/users", register);
 routes.post("/session", authenticate);
-
+routes.use('/api', weatherRoutes);
 routes.get("/login",verifyJWT ,profile);
 routes.post('/abilities',verifyJWT, createAbility);
 routes.put('/abilities/:id',verifyJWT, updateAbility);
